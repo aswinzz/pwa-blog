@@ -11,15 +11,15 @@ const Item = styled.div`
     flex: 1;
 `;
 
-export default () => {
+export default (props) => {
   return (
-    <Container>
+    <Container style={props.goBack ? {marginTop: 20}: {}}>
        <Item  style={{
                 fontSize: 22,
                 margin: '0 0 20px 0'
         }} >
         <Link to='/'>
-        <ArrowLeftOutlined/> Back
+        <ArrowLeftOutlined/> {props.goBack ? 'Go ': ''}Back
         </Link>
        </Item>
     </Container>

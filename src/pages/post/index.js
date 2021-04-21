@@ -5,6 +5,8 @@ import { HomeOutlined } from '@ant-design/icons';
 import AppShell from './appshell';
 import Header from '../../Header';
 import {Layout} from 'antd';
+import Typed from 'react-typed';
+
 const { Footer } = Layout;
 export const StyledDiv = styled.div`
 article.content {
@@ -297,7 +299,8 @@ export default class Post extends Component {
         super(props);
         this.state = {
             post: null,
-            loading: false
+            loading: false,
+            failed: false
         }
     }
 
@@ -314,9 +317,12 @@ export default class Post extends Component {
                         post: response.posts[0]
                     });
                 }
+                if (response && response.errors) {
+                    this.setState({loading: false, failed: true});
+                }
                 this.setState({loading: false});
             } catch (e) {
-                this.setState({loading: false});
+                this.setState({loading: false, failed: true});
             }
     }
 
@@ -349,9 +355,24 @@ export default class Post extends Component {
                         </article>
                     </StyledDiv>
                 : null}
+                {!this.state.loading && this.state.failed ? 
+                <>
+                <div style={{textAlign: 'center', display: 'flex',alignItems: 'center',justifyContent: 'center',height: '65vh'}} >
+                <div>
+                <Typed
+                    style={{fontSize: 32}}
+                    strings={['Sorry! The page you are looking for is not found.']}
+                    typeSpeed={40}
+                />
+                <Header goBack style={{marginTop: 20}}/>
+
+                </div>
+                </div>
+                    </>
+                : null}
             </StyledPostContainer>
 
-            <Footer style={{ textAlign: 'center' }}>Created with ♡ by <a href='https://github.com/aswinzz'>@aswinzz</a></Footer>
+            <Footer style={!this.state.loading && this.state.failed ? {position: 'fixed', bottom: 0,width: '100vw', textAlign: 'center'} : { textAlign: 'center' }}>Created with ♡ by <a href='https://github.com/aswinzz'>@aswinzz</a></Footer>
             </>
         )
     }

@@ -69,4 +69,16 @@ self.addEventListener('message', (event) => {
   }
 });
 
+self.addEventListener('fetch', event => {
+  console.log('Fetch intercepted for:', event.request.url);
+  event.respondWith(caches.match(event.request)
+    .then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request);
+      })
+    );
+});
+
 // Any other custom service worker logic can go here.

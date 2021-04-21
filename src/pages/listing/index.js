@@ -91,7 +91,8 @@ export default class Post extends Component {
         total: 0
       },
       loading: false,
-      appShell: false
+      appShell: false,
+      failed: false,
     };
   }
 
@@ -120,8 +121,11 @@ export default class Post extends Component {
               appShell: false,
         });
       }
+      if (response && response.errors) {
+        this.setState({loading: false, appShell: false, failed: true})
+      }
     } catch (e) {
-      this.setState({loading: false, appShell: false})
+      this.setState({failed: true, loading: false, appShell: false})
     }
   };
 
@@ -155,6 +159,7 @@ export default class Post extends Component {
           {this.state.appShell ? 
           <AppShell/>
           :
+          this.state.posts && this.state.posts.length ?
           <InfiniteScroll
             // className="infiniteScroll"
             initialLoad={true}
@@ -197,9 +202,11 @@ export default class Post extends Component {
                   : ''}
               </section>
             </div>
-          </InfiniteScroll>}
+          </InfiniteScroll> : this.state.failed ? <div style={{display: 'flex',justifyContent: 'center',height: 177, fontSize: 24}}><div>
+            No Posts Found
+          </div></div>: null}
         </StyledContainer>
-        <Footer style={{ textAlign: 'center' }}>Created with ♡ by <a href='https://github.com/aswinzz'>@aswinzz</a></Footer>
+        <Footer style={this.state.failed ? {position: 'fixed', bottom: 0,width: '100vw', textAlign: 'center'} : { textAlign: 'center' }}>Created with ♡ by <a href='https://github.com/aswinzz'>@aswinzz</a></Footer>
         {/* <Footer /> */}
       </div>
     );
